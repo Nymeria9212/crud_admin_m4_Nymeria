@@ -9,6 +9,7 @@ import recoverUserController from "../controllers/recoverUser.controller";
 import readingUserController from "../controllers/readingUsers.controller";
 import { emailExistMiddleware } from "../middlewares/emailExist.middleware";
 import { userExistsMiddleware } from "../middlewares/userExists.middleware";
+import verifyTokenMiddleware from "../middlewares/verifyToken.middleware";
 
 const userRouter: Router = Router();
 
@@ -19,7 +20,7 @@ userRouter.post(
   createUserController
 );
 userRouter.get("", readingUserController);
-userRouter.get("/profile", retriverUserController);
+userRouter.get("/profile", verifyTokenMiddleware, retriverUserController);
 userRouter.patch(
   "/:id",
   validateBody(userRequest),
@@ -27,7 +28,12 @@ userRouter.patch(
   userExistsMiddleware,
   updateUserController
 );
-userRouter.delete("/:id", userExistsMiddleware, deleteUserController);
+userRouter.delete(
+  "/:id",
+  verifyTokenMiddleware,
+  userExistsMiddleware,
+  deleteUserController
+);
 userRouter.put("/:id/recover", userExistsMiddleware, recoverUserController);
 
 export default userRouter;

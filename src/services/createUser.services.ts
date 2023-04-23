@@ -15,7 +15,7 @@ const createUserService = async (userData: TUserReq) => {
           (%I)
       VALUES
           (%L)
-          RETURNING *;
+          RETURNING "id", "name", "email";
   `,
     Object.keys(userData),
     Object.values(userData)
