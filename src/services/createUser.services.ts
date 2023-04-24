@@ -1,10 +1,10 @@
 import format from "pg-format";
-import { TUser, TUserReq } from "../interfaces/users.interfaces";
+import { TUser, TUserReq, TUserReqPost } from "../interfaces/users.interfaces";
 import { QueryResult } from "pg";
 import client from "../database/config";
 import { hash } from "bcryptjs";
 
-const createUserService = async (userData: TUserReq) => {
+const createUserService = async (userData: TUserReqPost) => {
   const hashedPassword = await hash(userData.password, 10);
   userData.password = hashedPassword;
 

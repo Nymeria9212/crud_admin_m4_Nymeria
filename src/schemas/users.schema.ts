@@ -14,6 +14,24 @@ const userSchemaReqLogin = z.object({
   password: z.string(),
 });
 
+const userReqPostSchema = userSchemaResponse.omit({ id: true, active: true });
+const userPatchSchema = userSchemaResponse.omit({
+  id: true,
+  admin: true,
+  active: true,
+});
+
 const userRequest = userSchemaResponse.omit({ id: true });
 
-export { userSchemaResponse, userRequest, userSchemaReqLogin };
+const loginSchema = z.object({
+  token: z.string(),
+});
+
+export {
+  userSchemaResponse,
+  userRequest,
+  userSchemaReqLogin,
+  userReqPostSchema,
+  userPatchSchema,
+  loginSchema,
+};

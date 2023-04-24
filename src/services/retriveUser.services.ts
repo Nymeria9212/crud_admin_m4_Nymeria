@@ -1,13 +1,23 @@
-import { QueryResult } from "pg";
+import { QueryConfig, QueryResult } from "pg";
 import { client } from "../database";
 
 const retriverUserService = async () => {
   const queryString: string = `
-        SELECT *
-        FROM users;
+        SELECT 
+          "id",
+          "name",
+          "email"
+        FROM 
+          users
+        WHERE id=$1;
     
     `;
-  const queryResult: QueryResult = await client.query(queryString);
+
+  const queryConfig: QueryConfig = {
+    text: queryString,
+    values: [],
+  };
+  const queryResult: QueryResult = await client.query(queryConfig);
 
   return queryResult.rows;
 };

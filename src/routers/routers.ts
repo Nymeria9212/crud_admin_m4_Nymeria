@@ -1,6 +1,6 @@
 import { Router } from "express";
 import createUserController from "../controllers/createUser.controller";
-import { userRequest } from "../schemas/users.schema";
+import { userPatchSchema, userRequest } from "../schemas/users.schema";
 import validateBody from "../middlewares/validateBody.middleware";
 import retriverUserController from "../controllers/retriverUser.controller";
 import deleteUserController from "../controllers/deleteUser.controller";
@@ -9,7 +9,8 @@ import recoverUserController from "../controllers/recoverUser.controller";
 import readingUserController from "../controllers/readingUsers.controller";
 import { emailExistMiddleware } from "../middlewares/emailExist.middleware";
 import { userExistsMiddleware } from "../middlewares/userExists.middleware";
-import verifyTokenMiddleware from "../middlewares/verifyToken.middleware";
+import validateTokenMiddleware from "../middlewares/validatedToken.middleware";
+import ensureAdminToken from "../middlewares/ensureAdminToken.middleware";
 
 const userRouter: Router = Router();
 
@@ -19,18 +20,23 @@ userRouter.post(
   emailExistMiddleware,
   createUserController
 );
-userRouter.get("", readingUserController);
-userRouter.get("/profile", verifyTokenMiddleware, retriverUserController);
+userRouter.get(
+  "",
+  validateTokenMiddleware,
+  ensureAdminToken,
+  readingUserController
+);
+userRouter.get("/profile", validateTokenMiddleware, retriverUserController);
 userRouter.patch(
   "/:id",
-  validateBody(userRequest),
+  validateBody(userPatchSchema),
   emailExistMiddleware,
   userExistsMiddleware,
   updateUserController
 );
 userRouter.delete(
   "/:id",
-  verifyTokenMiddleware,
+  validateTokenMiddleware,
   userExistsMiddleware,
   deleteUserController
 );
