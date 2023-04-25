@@ -11,6 +11,7 @@ import { emailExistMiddleware } from "../middlewares/emailExist.middleware";
 import { userExistsMiddleware } from "../middlewares/userExists.middleware";
 import validateTokenMiddleware from "../middlewares/validatedToken.middleware";
 import ensureAdminToken from "../middlewares/ensureAdminToken.middleware";
+import ensureUpdateUserMiddleware from "../middlewares/ensureUpdateUser.middleware";
 
 const userRouter: Router = Router();
 
@@ -32,12 +33,16 @@ userRouter.patch(
   validateBody(userPatchSchema),
   emailExistMiddleware,
   userExistsMiddleware,
+  ensureAdminToken,
+  ensureUpdateUserMiddleware,
   updateUserController
 );
 userRouter.delete(
   "/:id",
   validateTokenMiddleware,
+  ensureAdminToken,
   userExistsMiddleware,
+  ensureUpdateUserMiddleware,
   deleteUserController
 );
 userRouter.put("/:id/recover", userExistsMiddleware, recoverUserController);

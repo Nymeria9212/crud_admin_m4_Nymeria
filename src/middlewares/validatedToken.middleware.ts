@@ -19,6 +19,7 @@ const validateTokenMiddleware = async (
       throw new AppError(err.message, 401);
     }
     res.locals.admin = decoded.admin;
+    res.locals.idUser = decoded.id;
   });
 
   return next();
