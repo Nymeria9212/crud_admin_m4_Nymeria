@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ZodError, ZodTypeAny } from "zod";
+import { ZodError, ZodTypeAny, z } from "zod";
 
 const validateBody =
   (schema: ZodTypeAny) =>
@@ -11,7 +11,7 @@ const validateBody =
 
       return next();
     } catch (error) {
-      if (error instanceof ZodError) {
+      if (error instanceof z.ZodError) {
         return res.status(400).json({ message: error.flatten().fieldErrors });
       }
       console.error(error);

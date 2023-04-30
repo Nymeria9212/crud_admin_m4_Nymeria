@@ -1,23 +1,19 @@
-import { QueryConfig, QueryResult } from "pg";
 import "dotenv/config";
-import { TLogin } from "../interfaces/users.interfaces";
-
-import jwt from "jsonwebtoken";
+import { TLogin, TUser } from "../interfaces/users.interfaces";
+import jwt, { sign } from "jsonwebtoken";
 import { Request, Response } from "express";
+import { Console } from "console";
 
 const loginUserService = async (
   req: Request,
   res: Response
 ): Promise<TLogin> => {
-  const user = res.locals.user;
-  const token: string = jwt.sign(
-    { admin: user.admin },
-    process.env.SECRET_KEY!,
-    {
-      expiresIn: "1d",
-      subject: user.id.toString(),
-    }
-  );
+  const user: TUser = res.locals.user;
+
+  const token = sign({ admin: user.admin }, String(process.env.SECRET_KEY!), {
+    expiresIn: process.env.EXPIRES_IN,
+    subject: String(user.id),
+  });
   return { token };
 };
 export default loginUserService;

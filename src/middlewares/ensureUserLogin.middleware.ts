@@ -1,15 +1,20 @@
 import { QueryConfig, QueryResult } from "pg";
 import { AppError } from "../errors";
 import { NextFunction, Request, Response } from "express";
-import { TUser, TUserReqPost } from "../interfaces/users.interfaces";
+import {
+  TUser,
+  TUserLoginReq,
+  TUserReqPost,
+} from "../interfaces/users.interfaces";
 import { client } from "../database";
+import { userSchemaReqLogin } from "../schemas/users.schema";
 
 const ensureUserLogin = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<Response | void> => {
-  const userData: TUserReqPost = req.body;
+  const userData: TUserLoginReq = userSchemaReqLogin.parse(req.body);
 
   const queryString: string = `
     SELECT *
@@ -27,10 +32,6 @@ const ensureUserLogin = async (
 
   res.locals.user = user;
   if (queryResult.rowCount === 0) {
-    throw new AppError("Wrong email/password", 401);
-  }
-
-  if ((user.active = false)) {
     throw new AppError("Wrong email/password", 401);
   }
 

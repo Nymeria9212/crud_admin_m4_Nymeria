@@ -1,6 +1,5 @@
 import { Router } from "express";
 import createUserController from "../controllers/createUser.controller";
-import { userPatchSchema, userRequest } from "../schemas/users.schema";
 import validateBody from "../middlewares/validateBody.middleware";
 import retriverUserController from "../controllers/retriverUser.controller";
 import deleteUserController from "../controllers/deleteUser.controller";
@@ -11,7 +10,8 @@ import { emailExistMiddleware } from "../middlewares/emailExist.middleware";
 import { userExistsMiddleware } from "../middlewares/userExists.middleware";
 import validateTokenMiddleware from "../middlewares/validatedToken.middleware";
 import ensureAdminToken from "../middlewares/ensureAdminToken.middleware";
-import ensureUpdateUserMiddleware from "../middlewares/ensureUpdateUser.middleware";
+import { userPathRequest, userRequest } from "../schemas/users.schema";
+import validatePermission from "../middlewares/validateUserPermission.middleware";
 
 const userRouter: Router = Router();
 
@@ -30,19 +30,19 @@ userRouter.get(
 userRouter.get("/profile", validateTokenMiddleware, retriverUserController);
 userRouter.patch(
   "/:id",
-  validateBody(userPatchSchema),
-  emailExistMiddleware,
+
   userExistsMiddleware,
-  ensureAdminToken,
-  ensureUpdateUserMiddleware,
+  validateBody(userPathRequest),
+  emailExistMiddleware,
+  validateTokenMiddleware,
+  validatePermission,
   updateUserController
 );
 userRouter.delete(
   "/:id",
-  validateTokenMiddleware,
-  ensureAdminToken,
   userExistsMiddleware,
-  ensureUpdateUserMiddleware,
+  validateTokenMiddleware,
+  validatePermission,
   deleteUserController
 );
 userRouter.put("/:id/recover", userExistsMiddleware, recoverUserController);

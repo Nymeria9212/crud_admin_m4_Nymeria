@@ -3,10 +3,9 @@ import { client } from "../database";
 
 const deleteUserService = async (id: number) => {
   const queryString: string = `
-        UPDATE users
-        SET 
-        ("active")=(false)
-        WHERE id=$1;
+        DELETE FROM users
+        WHERE 
+        id=$1;
     `;
   const queryConfig: QueryConfig = {
     text: queryString,
@@ -14,6 +13,7 @@ const deleteUserService = async (id: number) => {
   };
 
   const queryResult: QueryResult = await client.query(queryConfig);
+  return queryResult.rows;
 };
 
 export { deleteUserService };

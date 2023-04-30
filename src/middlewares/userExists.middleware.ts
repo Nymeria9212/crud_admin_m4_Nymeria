@@ -24,6 +24,8 @@ const userExistsMiddleware = async (
   const queryResult: QueryResult<TUser> = await client.query(queryConfig);
 
   const userCount = queryResult.rowCount;
+
+  res.locals.user = queryResult.rows[0];
   if (userCount === 0) {
     throw new AppError("User not found", 404);
   }
